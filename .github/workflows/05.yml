@@ -6,7 +6,7 @@ on:
         required: true
         description: Filename
 jobs:
-  streamlink:
+  T-DL:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,12 +16,15 @@ jobs:
         sudo apt install -y unzip wget aria2
         chmod +x go-ul
         sudo cp go-ul /usr/local/bin/go-ul
-        
+        sudo mkdir T
     - name: Downloading TS
       timeout-minutes: 360
-      run: aria2c -d output --seed-time=0 "${{github.event.inputs.magnet}}"
+      run: aria2c -d T --seed-time=0 "${{github.event.inputs.magnet}}"
     - name: Uploading Video
       run: |
-        go-ul pixeldrain gofile anonfiles -d 'output/' -r
-    - name: Delete file
-      run: rm "${{github.event.inputs.filename}}"
+        go-ul pixeldrain gofile anonfiles -d 'T/' -r -o output/link.txt
+    - name: Upload Downloaded Videos
+      uses: actions/upload-artifact@v3
+      with:
+        name: link.zip
+        path: output
