@@ -14,6 +14,9 @@ jobs:
       run : |
         sudo apt update
         sudo apt install -y unzip wget aria2
+        chmod +x go-ul
+        sudo cp go-ul /usr/local/bin/go-ul
+        
     - name: Downloading TS
       timeout-minutes: 360
       run: aria2c -d output --seed-time=0 "${{github.event.inputs.magnet}}"
