@@ -1,0 +1,65 @@
+name: 07-DL-F
+on: 
+  workflow_dispatch:
+    inputs:
+      url:
+        required: true
+        description: FC2 URL
+      name:
+        required: true
+        description: Channel name
+      audioOnly:
+        type: boolean
+        description: DL Audio-only
+        default: false
+jobs:
+  FC2-DL:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with: 
+        python-version: '3.8'
+    - name: Installing
+      run : |
+        sudo apt update
+        sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
+        sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
+        sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ytarchive
+        sudo cp ytarchive /usr/local/bin/ytarchive
+        sudo chmod +x go-ul
+        sudo cp go-ul /usr/local/bin/go-ul
+        pip install --upgrade fc2-live-dl
+        sudo mkdir F
+        echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/links.txt
+    - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
+      timeout-minutes: 360
+      if: ${{github.event.inputs.audioOnly == 'false'}}
+        run: sudo fc2-live-dl -x --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
+#       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+    - name: Downloading Audio-only
+      if: ${{github.event.inputs.audioOnly == 'true'}}
+        run: sudo fc2-live-dl --quality sound --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
+#       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+    - name: Uploading
+      timeout-minutes: 240
+      run: |
+        go-ul pixeldrain gofile anonfiles catbox -d 'F/' -r -o output/links.txt
+    - name: Uploading TF.sh Video
+      if: ${{github.event.inputs.audioOnly == 'false'}}
+      run: |
+        sudo mv F/*.mp4 F/${{github.event.inputs.name}}.mp4
+        curl --upload-file "${{github.event.inputs.name}}.mp4" "https://transfer.sh/${{github.event.inputs.name}}.mp4" >> output/links.txt
+    - name: Uploading TF.sh Audio
+      run: |
+        sudo mv F/*.m4a F/${{github.event.inputs.name}}.m4a
+        curl --upload-file "F/${{github.event.inputs.name}}.m4a" "https://transfer.sh/${{github.event.inputs.name}}.m4a" >> output/links.txt
+    - name: Upload link ${{github.event.inputs.name}}s Videos
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{github.event.inputs.name}}
+        path: output
