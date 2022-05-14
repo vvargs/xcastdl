@@ -1,4 +1,4 @@
-name: 04-DL
+name: 04-DL-S
 on: 
   workflow_dispatch:
     inputs:
