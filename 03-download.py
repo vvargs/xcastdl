@@ -106,7 +106,7 @@ for url in urls:
         output, output)
     os.system(fix_command)
     logging.info("format video to mp4")
-    format_command = 'ffmpeg -i %s.mkv -c:v copy -c:a copy output/%s.mp4' % (
+    format_command = 'ffmpeg -i %s.mkv -c:v copy -c:a copy "/home/runner/work/tcastdl/tcastdl/output/%s.mp4"' % (
         output, output)
     os.system(format_command)
     logging.info("finished")
