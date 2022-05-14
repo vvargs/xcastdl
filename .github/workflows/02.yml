@@ -1,0 +1,29 @@
+name: DL
+on: 
+  workflow_dispatch:
+    inputs:
+      filename:
+        required: true
+        description: Filename
+      url:
+        required: true
+        description: url m3u8
+jobs:
+  streamlink:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Apt
+      run : apt install curl
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with: 
+        python-version: '3.8'
+    - name: Install Requirements
+      run : pip3 install requests streamlink
+    - name: Download with streamlink
+      run: streamlink -o '${{github.event.inputs.filename}}.ts' ${{github.event.inputs.url}} best
+    - name: Upload to transfersh
+      run: curl --upload-file "./${{github.event.inputs.filename}}.ts" "https://transfer.sh/${{github.event.inputs.filename}}.ts"
+    - name: Delete file
+      run: rm "./${{github.event.inputs.filename}}.ts"
