@@ -22,7 +22,7 @@ jobs:
         sudo mkdir Y
     - name: Downloading TS
       timeout-minutes: 360
-      run: ytarchive -v -w -t -o "Y/%(channel_id)s/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+      run: ytarchive -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Uploading Video
       timeout-minutes: 240
       run: go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
