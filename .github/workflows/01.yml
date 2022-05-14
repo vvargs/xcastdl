@@ -1,0 +1,26 @@
+name: DL
+
+on: workflow_dispatch:
+    inputs:
+      url:
+        required: true
+        description: url
+        
+jobs:
+  ytdlp:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      uses: actions/checkout@v2
+      name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with: python-version: '3.8'
+          
+    steps:
+      name: install go-dl
+      run: wget 'https://raw.githubusercontent.com/notpeko/scripts/master/misc/gofile-dl'
+      
+    steps: 
+      name: download
+      run: python gofile-dl -h #${{github.event.inputs.url}}
