@@ -19,7 +19,7 @@ jobs:
         sudo mkdir T
     - name: Downloading TS
       timeout-minutes: 360
-      run: aria2c -d T --seed-time=0 "${{github.event.inputs.magnet}}"
+      run: sudo aria2c -d T --seed-time=0 "${{github.event.inputs.magnet}}"
     - name: Uploading Video
       run: |
         go-ul pixeldrain gofile anonfiles -d 'T/' -r -o output/link.txt
