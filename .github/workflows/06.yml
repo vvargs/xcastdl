@@ -38,5 +38,5 @@ jobs:
     - name: Upload Downloaded Videos
       uses: actions/upload-artifact@v3
       with:
-        name: link.zip
+        name: link
         path: output
