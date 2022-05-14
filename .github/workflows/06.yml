@@ -28,10 +28,10 @@ jobs:
     - name: Downloading TS
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: sudo ytarchive -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Downloading TS-AudioOnly
       if: ${{github.event.inputs.audioOnly == 'true'}}
-      run: sudo ytarchive -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading
       timeout-minutes: 240
       run: go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
