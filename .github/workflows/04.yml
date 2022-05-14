@@ -28,13 +28,13 @@ jobs:
       run: streamlink -o '${{github.event.inputs.filename}}.ts' '${{github.event.inputs.url}}' best
     - name: Post-processing
       run: |
-        ffmpeg -hide_banner -i './${{github.event.inputs.filename}}.ts' -c copy -map_metadata -1 '${{github.event.inputs.filename}}.mp4'
-        ffmpeg -hide_banner -i './${{github.event.inputs.filename}}.ts' -vn -c:a copy -map_metadata -1 '${{github.event.inputs.filename}}.m4a'
+        ffmpeg -hide_banner -i './${{github.event.inputs.filename}}.ts' -c copy -map_metadata -1 'output/${{github.event.inputs.filename}}.mp4'
+        ffmpeg -hide_banner -i './${{github.event.inputs.filename}}.ts' -vn -c:a copy -map_metadata -1 'output/${{github.event.inputs.filename}}.m4a'
     - name: Uploading Video
       run: |
-        curl -F "file=@./${{github.event.inputs.filename}}.m4a" https://api.anonfiles.com/upload
-        curl -F "file=@./${{github.event.inputs.filename}}.mp4" https://api.anonfiles.com/upload
-        curl --upload-file "./${{github.event.inputs.filename}}.m4a" "https://transfer.sh/${{github.event.inputs.filename}}.m4a"
-        curl --upload-file "./${{github.event.inputs.filename}}.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4"
+        curl -F "file=@output/${{github.event.inputs.filename}}.m4a" https://api.anonfiles.com/upload
+        curl -F "file=@output/${{github.event.inputs.filename}}.mp4" https://api.anonfiles.com/upload
+        curl --upload-file "output//${{github.event.inputs.filename}}.m4a" "https://transfer.sh/${{github.event.inputs.filename}}.m4a"
+        curl --upload-file "output//${{github.event.inputs.filename}}.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4"
     - name: Delete file
       run: rm "./${{github.event.inputs.filename}}.ts"
