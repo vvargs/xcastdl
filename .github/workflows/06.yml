@@ -17,8 +17,8 @@ jobs:
         sudo add-apt-repository -y ppa:savoury1/ffmpeg5
         sudo add-apt-repository -y ppa:savoury1/ffmpeg4
         sudo apt install -y ffmpeg
-        chmod +x yrarchive
-        sudo cp go-ul /usr/local/bin/go-ul
+        chmod +x ytarchive
+        sudo cp ytarchive /usr/local/bin/ytarchive
         sudo mkdir Y
     - name: Downloading TS
       timeout-minutes: 360
