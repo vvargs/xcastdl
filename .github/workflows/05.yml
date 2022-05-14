@@ -16,7 +16,7 @@ jobs:
         sudo apt install -y unzip wget aria2
     - name: Downloading TS
       timeout-minutes: 360
-      run: aria2c -d output "${{github.event.inputs.magnet}}"
+      run: aria2c -d output --seed-time=0 "${{github.event.inputs.magnet}}"
     - name: Uploading Video
       run: |
         go-ul pixeldrain gofile anonfiles -d 'output/'
