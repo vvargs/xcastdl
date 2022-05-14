@@ -39,13 +39,14 @@ jobs:
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
-        run: sudo fc2-live-dl -x --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
+      run: sudo fc2-live-dl -x --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
 #       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Downloading Audio-only
       if: ${{github.event.inputs.audioOnly == 'true'}}
-        run: sudo fc2-live-dl --quality sound --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
+      run: sudo fc2-live-dl --quality sound --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
 #       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading
+      if: ${{github.event.inputs.audioOnly == 'false'}}
       timeout-minutes: 240
       run: |
         go-ul pixeldrain gofile anonfiles catbox -d 'F/' -r -o output/links.txt
