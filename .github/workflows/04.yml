@@ -27,11 +27,12 @@ jobs:
         sudo apt install -y unzip wget ffmpeg mkvtoolnix
         python3 -m pip install --upgrade pip
         pip3 install requests streamlink
+        pip install requests streamlink
         sudo mkdir DL
         sudo mkdir UL
     - name: Downloading TS
       timeout-minutes: 360
-      run: sudo streamlink -o 'DL/${{github.event.inputs.filename}}.ts' '${{github.event.inputs.url}}' best
+      run: streamlink -o 'DL/${{github.event.inputs.filename}}.ts' '${{github.event.inputs.url}}' best
     - name: Post-processing Video
       if: ${{github.event.inputs.includeVideo == 'true'}}
       run: ffmpeg -hide_banner -i 'DL/${{github.event.inputs.filename}}.ts' -c copy -map_metadata -1 -movflags +faststart 'UL/${{github.event.inputs.filename}}.mp4'
