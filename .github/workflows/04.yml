@@ -22,11 +22,12 @@ jobs:
       with: 
         python-version: '3.8'
     - name: Install Requirements
+    
+    # sudo python3 -m pip install --upgrade pip
+   # sudo apt install -y unzip wget ffmpeg mkvtoolnix
       run : |
         sudo apt update
-        sudo apt install -y unzip wget ffmpeg mkvtoolnix
-        sudo python3 -m pip install --upgrade pip
-        sudo pip3 install requests streamlink
+        sudo apt install -y wget ffmpeg
         sudo pip install requests streamlink
         sudo mkdir DL
         sudo mkdir UL
