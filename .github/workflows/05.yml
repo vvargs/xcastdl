@@ -1,0 +1,24 @@
+name: 05-DL-T
+on: 
+  workflow_dispatch:
+    inputs:
+      magnet:
+        required: true
+        description: Filename
+jobs:
+  streamlink:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Requirements
+      run : |
+        sudo apt update
+        sudo apt install -y unzip wget aria2
+    - name: Downloading TS
+      timeout-minutes: 360
+      run: aria2c -d output "${{github.event.inputs.magnet}}"
+    - name: Uploading Video
+      run: |
+        go-ul pixeldrain gofile anonfiles -d 'output/'
+    - name: Delete file
+      run: rm "${{github.event.inputs.filename}}"
