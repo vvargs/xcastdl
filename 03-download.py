@@ -105,8 +105,10 @@ for url in urls:
     fix_command = 'mkvmerge --output %s.mkv --language 0:und --fix-bitstream-timing-information 0:1 --language 1:und %s.ts --track-order 0:0,0:1' % (
         output, output)
     os.system(fix_command)
+    mdout = 'mkdir output'
+    os.system(mdout)
     logging.info("format video to mp4")
-    format_command = 'ffmpeg -i %s.mkv -c:v copy -c:a copy "/home/runner/work/tcastdl/tcastdl/output/%s.mp4"' % (
+    format_command = 'ffmpeg -i %s.mkv -c:v copy -c:a copy output/%s.mp4' % (
         output, output)
     os.system(format_command)
     logging.info("finished")
