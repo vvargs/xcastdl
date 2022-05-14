@@ -30,7 +30,8 @@ jobs:
         sudo chmod +x go-ul
         sudo cp go-ul /usr/local/bin/go-ul
         sudo mkdir Y
-    - name: Downloading ${{github.event.inputs.name}}  ${{github.event.inputs.url}}
+        echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/link.txt
+    - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
@@ -40,7 +41,7 @@ jobs:
     - name: Uploading
       timeout-minutes: 240
       run: go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
-    - name: Upload link ${{github.event.inputs.name}} Videos
+    - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
       with:
         name: ${{github.event.inputs.name}}
