@@ -1,0 +1,33 @@
+name: 06-DL-Y
+on: 
+  workflow_dispatch:
+    inputs:
+      url:
+        required: true
+        description: Youtube URL
+jobs:
+  Y-DL:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Requirements
+      run : |
+        sudo apt update
+        sudo apt-get remove ffmpeg
+        sudo add-apt-repository -y ppa:savoury1/ffmpeg5
+        sudo add-apt-repository -y ppa:savoury1/ffmpeg4
+        sudo apt install -y ffmpeg
+        chmod +x yrarchive
+        sudo cp go-ul /usr/local/bin/go-ul
+        sudo mkdir Y
+    - name: Downloading TS
+      timeout-minutes: 360
+      run: ytarchive -v -w -t -o "Y/%(channel_id)s/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+    - name: Uploading Video
+      timeout-minutes: 240
+      run: go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
+    - name: Upload Downloaded Videos
+      uses: actions/upload-artifact@v3
+      with:
+        name: link.zip
+        path: output
