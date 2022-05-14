@@ -22,6 +22,6 @@ jobs:
       run: aria2c -d output --seed-time=0 "${{github.event.inputs.magnet}}"
     - name: Uploading Video
       run: |
-        go-ul pixeldrain gofile anonfiles -d 'output/'
+        go-ul pixeldrain gofile anonfiles -d 'output/' -r
     - name: Delete file
       run: rm "${{github.event.inputs.filename}}"
