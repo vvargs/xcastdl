@@ -5,38 +5,43 @@ on:
       url:
         required: true
         description: Youtube URL
+      name:
+        required: true
+        description: Channel name
       audioOnly:
         type: boolean
-        description: dl Audio-only
+        description: DL Audio-only
         default: false
 jobs:
   Y-DL:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install Requirements
+    - name: Installing
       run : |
         sudo apt update
-        sudo add-apt-repository -y ppa:savoury1/ffmpeg5
-        sudo add-apt-repository -y ppa:savoury1/ffmpeg4
-        sudo apt install -y ffmpeg
-        chmod +x ytarchive
+        sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
+        sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
+        sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ytarchive
         sudo cp ytarchive /usr/local/bin/ytarchive
-        chmod +x go-ul
+        sudo chmod +x go-ul
         sudo cp go-ul /usr/local/bin/go-ul
         sudo mkdir Y
-    - name: Downloading TS
+    - name: Downloading ${{github.event.inputs.name}}  ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Downloading TS-AudioOnly
       if: ${{github.event.inputs.audioOnly == 'true'}}
-      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading
       timeout-minutes: 240
       run: go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
-    - name: Upload Downloaded Videos
+    - name: Upload link ${{github.event.inputs.name}} Videos
       uses: actions/upload-artifact@v3
       with:
-        name: link
+        name: ${{github.event.inputs.name}}
         path: output
