@@ -1,6 +1,7 @@
 name: DL
 
-on: workflow_dispatch:
+on: 
+  workflow_dispatch:
     inputs:
       url:
         required: true
