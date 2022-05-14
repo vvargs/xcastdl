@@ -35,7 +35,7 @@ jobs:
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
-    - name: Downloading TS-AudioOnly
+    - name: Downloading Audio-only
       if: ${{github.event.inputs.audioOnly == 'true'}}
       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading
