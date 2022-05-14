@@ -46,7 +46,7 @@ jobs:
           unzip edgedriver_linux64.zip
           sudo mv msedgedriver /usr/bin/msedgedriver
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r 03-requirements.txt
           npm -g i minyami
       - name: Start Background Service
         run: |
