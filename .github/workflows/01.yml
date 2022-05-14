@@ -14,7 +14,9 @@ jobs:
       uses: actions/setup-python@v2
       with: 
         python-version: '3.8'
+    - name: Install Requirements
+      run : pip3 install requests
     - name: install go-dl
       run: wget 'https://raw.githubusercontent.com/notpeko/scripts/master/misc/gofile-dl'
     - name: download
-      run: python gofile-dl -h #${{github.event.inputs.url}}
+      run: python3 gofile-dl -h #${{github.event.inputs.url}}
