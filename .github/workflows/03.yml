@@ -57,7 +57,7 @@ jobs:
           TWITCASTING_URL: ${{github.event.inputs.url}}
           UPLOAD_VIDEO_TO_ONEDRIVE: ${{github.event.inputs.onedrive}}
         run: |
-          python download.py
+          python 03-download.py
       - name: Upload Downloaded Videos
         if: ${{github.event.inputs.artifact == 'true'}}
         uses: actions/upload-artifact@v3
