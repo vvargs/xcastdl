@@ -32,7 +32,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          echo "${{github.event.inputs.url}: -11}" >> output/test.txt
+          echo "${{github.event.inputs.url}}" | tail -c 11 >> output/test.txt
           echo Add other actions to build,>> output/test.txt
           echo test, and deploy your project.>> output/test.txt
       - name: Send file link to
