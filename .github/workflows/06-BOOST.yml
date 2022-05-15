@@ -1,0 +1,58 @@
+name: 06-DL-Y-BOOST
+on: 
+  workflow_dispatch:
+    inputs:
+      url:
+        required: true
+        description: Youtube URL
+      name:
+        required: true
+        description: Channel name
+      audioOnly:
+        type: boolean
+        description: DL Audio-only
+        default: false
+jobs:
+  Y-DL:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Installing
+      run : |
+        sudo apt update
+        sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
+        sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
+        sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ytarchive
+        sudo cp ytarchive /usr/local/bin/ytarchive
+        sudo chmod +x go-ul
+        sudo cp go-ul /usr/local/bin/go-ul
+        sudo mkdir Y
+        echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/link.txt
+    - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
+      timeout-minutes: 360
+      if: ${{github.event.inputs.audioOnly == 'false'}}
+      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 48 "${{github.event.inputs.url}}" best
+    - name: Downloading Audio-only
+      if: ${{github.event.inputs.audioOnly == 'true'}}
+      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+    - name: Uploading
+      timeout-minutes: 240
+      env:
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run: |
+        go-ul pixeldrain gofile anonfiles catbox ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/YT/' -o output/link.txt
+        mv output/link.txt output/${{github.event.inputs.name}}s-$(echo "${{github.event.inputs.url}}" | tail -c 11)-[06Y].txt
+    - name: Upload link ${{github.event.inputs.name}}s Videos
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{github.event.inputs.name}}
+        path: output
+    - name: Send file to discord
+      uses: sinshutu/upload-to-discord@master
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      with:
+        args: output/*.txt
