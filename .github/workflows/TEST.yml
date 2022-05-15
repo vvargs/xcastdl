@@ -35,6 +35,7 @@ jobs:
           echo "${{github.event.inputs.url}}" | tail -c 11 >> output/test.txt
           echo Add other actions to build,>> output/test.txt
           echo test, and deploy your project.>> output/test.txt
+          mv output/test.txt output/$(echo "${{github.event.inputs.url}}" | tail -c 11).txt
       - name: Send file link to
         uses: sinshutu/upload-to-discord@master
         env:
