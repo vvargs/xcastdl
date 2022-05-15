@@ -13,6 +13,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    environment: 
+      name: production
+      url: https://github.com
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,9 +31,9 @@ jobs:
         run: |
           echo Add other actions to build,>> output/test.txt
           echo test, and deploy your project.>> output/test.txt
-      - name: Send file link to
-        uses: sinshutu/upload-to-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{secrets.DISCORD_WEBHOOK}}
-        with:
-          args: output/*.txt
+#       - name: Send file link to
+#         uses: sinshutu/upload-to-discord@master
+#         env:
+#           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#         with:
+#           args: output/*.txt
