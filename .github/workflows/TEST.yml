@@ -31,9 +31,9 @@ jobs:
         run: |
           echo Add other actions to build,>> output/test.txt
           echo test, and deploy your project.>> output/test.txt
-#       - name: Send file link to
-#         uses: sinshutu/upload-to-discord@master
-#         env:
-#           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-#         with:
-#           args: output/*.txt
+      - name: Send file link to
+        uses: sinshutu/upload-to-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: output/*.txt
