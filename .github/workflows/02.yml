@@ -22,7 +22,7 @@ jobs:
     - name: Install Requirements
       run : pip3 install requests streamlink
     - name: Download with streamlink
-      run: streamlink -o '${{github.event.inputs.filename}}.ts' ${{github.event.inputs.url}} best
+      run: sudo streamlink -l none -o '${{github.event.inputs.filename}}.ts' ${{github.event.inputs.url}} best
     - name: Upload to transfersh
       run: curl --upload-file "./${{github.event.inputs.filename}}.ts" "https://transfer.sh/${{github.event.inputs.filename}}.ts"
     - name: Delete file
