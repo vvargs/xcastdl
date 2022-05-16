@@ -55,8 +55,7 @@ jobs:
     - name: Uploading
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
-      run: |
-        go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/SFF/' -O -o output/link.txt
+      run: go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/SFF/' -o 'output/${{github.event.inputs.filename}}.txt'
       # curl --upload-file "UL/*.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4"
     - name: Send file to discord
       uses: sinshutu/upload-to-discord@master
