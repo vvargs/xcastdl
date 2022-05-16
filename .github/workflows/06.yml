@@ -38,13 +38,20 @@ jobs:
     - name: Downloading Audio-only
       if: ${{github.event.inputs.audioOnly == 'true'}}
       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
-    - name: Uploading
+    - name: Uploading ftp
+      if: ${{github.event.inputs.audioOnly == 'false'}}
       timeout-minutes: 240
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul pixeldrain gofile anonfiles catbox ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/YT/' -o output/link.txt
-        mv output/link.txt output/${{github.event.inputs.name}}-$(echo "${{github.event.inputs.url}}" | tail -c 11)-[06Y].txt
+        go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/YT/' -O -o output/link.txt
+    - name: Uploading 
+      timeout-minutes: 240
+      env:
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run: |
+        go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
+        mv output/link.txt output/${{github.event.inputs.name}}-$(echo "${{github.event.inputs.url}}" | tail -c 12)-[06Y].txt
     - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
       with:
