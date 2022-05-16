@@ -15,7 +15,7 @@ else:
   download_command = 'streamlink --stream-segment-threads 8 --force-progress -o "%s.ts" %s best' % (output, m3u8_url)
 os.system(download_command)
 
-if audio_only == video_only:
+if audio_only == 'true' and video_only == 'true':
   fix_command = 'sudo ffmpeg -hide_banner -i "%s.ts" -c copy -map_metadata -1 -movflags +faststart "UL/%s.mp4" -vn -c:a copy -map_metadata -1 -movflags +faststart "UL/%s.m4a"' % (output, output, output)
 elif audio_only == 'true':
   fix_command = 'sudo ffmpeg -hide_banner -i "%s.ts" -vn -c:a copy -map_metadata -1 -movflags +faststart "UL/%s.m4a"' % (output, output)
