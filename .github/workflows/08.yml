@@ -35,7 +35,7 @@ jobs:
         nohup sudo chmod +x go-ul &
         nohup sudo cp go-ul /usr/local/bin/go-ul &
         nohup sudo wget 'https://raw.githubusercontent.com/rexazier/r-civer/main/unix2base62.py' &
-        nohup sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz' &
+        nohup sudo wget -q 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz' &
         sudo pip install streamlink
         sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
         sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
