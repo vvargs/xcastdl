@@ -15,6 +15,9 @@ on:
 jobs:
   Y-DL:
     runs-on: ubuntu-latest
+    environment: 
+      name: ${{github.event.inputs.name}}
+      url: ${{github.event.inputs.url}}
     steps:
     - uses: actions/checkout@v2
     - name: Installing
@@ -56,7 +59,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{github.event.inputs.name}}
-        path: output
+        path: output/*.txt
     - name: Send file to discord
       uses: sinshutu/upload-to-discord@master
       env:
