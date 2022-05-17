@@ -64,7 +64,7 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       with:
         args: output/*.txt
-    - name: Upload link ${{github.event.inputs.name}}s Videos
+    - name: Upload ${{github.event.inputs.filename}}s links
       uses: actions/upload-artifact@v3
       with:
         name: ${{github.event.inputs.filename}}
