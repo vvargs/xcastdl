@@ -45,6 +45,7 @@ jobs:
         sudo mkdir UL
         echo ${{github.event.inputs.name}} ${{github.event.inputs.m3u8url}} > 'output/${{github.event.inputs.filename}}.txt'
     - name: Downloading
+      timeout-minutes: 360
       env:
         FILE_NAME: ${{github.event.inputs.filename}}
         M3U8_URL: ${{github.event.inputs.m3u8url}}
@@ -53,6 +54,7 @@ jobs:
         TC_COOKIES: ${{ secrets.TC_COOKIES }}
       run: python tclivedl.py
     - name: Uploading
+      timeout-minutes: 240
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
