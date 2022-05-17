@@ -9,7 +9,7 @@ cookies = os.getenv("TC_COOKIES")
 
 output = "%s [%s]" % (file_name, unix2base62.timename())
 
-args = '--retry-open 3 --retry-streams 30 --retry-max 300 --stream-segment-threads 8 --force-progress --cookies "%s" -o "%s.ts" "%s"' % (cookies, output, m3u8_url)
+args = '-l info --retry-open 3 --retry-streams 30 --retry-max 300 --stream-segment-threads 8 --force-progress --http-cookie "%s" -o "%s.ts" "%s"' % (cookies, output, m3u8_url)
 
 download_command = 'streamlink %s best' % (args)
 os.system(download_command)
