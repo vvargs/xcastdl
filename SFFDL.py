@@ -10,9 +10,9 @@ use_ffmpeg = os.getenv("USE_FFMPEG")
 output = "%s [%s]" % (file_name, unix2base62.timename())
 # metadata = '-metadata:g encoding_tool="GA.00.00"'
 if(use_ffmpeg):
-  download_command = 'ffmpeg -hide_banner -i "%s" -c copy %s.ts' % (m3u8_url, output)
+  download_command = 'ffmpeg -hide_banner -i "%s" -c copy "%s.ts"' % (m3u8_url, output)
 else:
-  download_command = 'streamlink --stream-segment-threads 8 --force-progress -o "%s.ts" %s best' % (output, m3u8_url)
+  download_command = 'streamlink --stream-segment-threads 8 --force-progress -o "%s.ts" "%s" best' % (output, m3u8_url)
 os.system(download_command)
 
 if audio_only == 'true' and video_only == 'true':
