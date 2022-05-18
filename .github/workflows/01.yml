@@ -17,7 +17,17 @@ jobs:
     - name: Install Requirements
       run : pip3 install requests
     - name: install go-dl
-      run: wget 'https://raw.githubusercontent.com/notpeko/scripts/master/misc/gofile-dl'
+      run : |
+        wget 'https://raw.githubusercontent.com/notpeko/scripts/master/misc/gofile-dl'
+        sudo mkdir T
+        udo cd T
     - name: download
 #       run: python3 gofile-dl -h #${{github.event.inputs.url}}
-      run: python3 gofile-dl ${{github.event.inputs.url}}
+      run: |
+        sudo python gofile-dl ${{github.event.inputs.url}}
+    - name: Uploading to FTP
+      if  : ${{github.event.inputs.ftp_only == 'true'}}
+      timeout-minutes: 240
+      env :
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run : go-ul ftp -d 'T/' -r -u '${{ env.VOE_FTP }}/TEMP' -O
