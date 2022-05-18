@@ -46,15 +46,15 @@ jobs:
       env :
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run : |
-        go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
-        go-ul pixeldrain anonfiles gofile catbox -d 'Y/' -r -o output/link.txt
+        go-ul ftp -d 'Y' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
+        go-ul pixeldrain anonfiles gofile catbox -d 'Y' -r -o output/link.txt
     - name: Uploading to FTP
       if  : ${{github.event.inputs.ftp_only == 'true'}}
       timeout-minutes: 240
       env :
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run : |
-        go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
+        go-ul ftp -d 'Y' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
     - name: Archive ${{github.event.inputs.name}}s link.txt
       if  : ${{github.event.inputs.ftp_only == 'false'}}
       uses: actions/upload-artifact@v3
