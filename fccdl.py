@@ -1,5 +1,4 @@
 import os
-import unix2base62
 
 url = os.getenv("URL")
 audio_only = os.getenv("AUDIO_ONLY")
