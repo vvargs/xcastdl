@@ -19,15 +19,14 @@ jobs:
     - name: install go-dl
       run : |
         wget 'https://raw.githubusercontent.com/notpeko/scripts/master/misc/gofile-dl'
-        sudo mkdir T
-        udo cd T
     - name: download
+      timeout-minutes: 240
 #       run: python3 gofile-dl -h #${{github.event.inputs.url}}
       run: |
         sudo python gofile-dl ${{github.event.inputs.url}}
+        mv *.mp4 output/*.mp4
     - name: Uploading to FTP
-      if  : ${{github.event.inputs.ftp_only == 'true'}}
       timeout-minutes: 240
       env :
         VOE_FTP: ${{ secrets.VOE_FTP }}
-      run : go-ul ftp -d 'T/' -r -u '${{ env.VOE_FTP }}/TEMP' -O
+      run : go-ul ftp -d 'output/' -r -u '${{ env.VOE_FTP }}/TEMP' -O
