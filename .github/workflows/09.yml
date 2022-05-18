@@ -24,13 +24,13 @@ jobs:
     - name: Installing
       run : |
         sudo apt update -y
-        nohup sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz' &
-        sudo wget 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp' -O /usr/local/bin/yt-dlp
+        sudo wget -q 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp' -O /usr/local/bin/yt-dlp
         sudo chmod a+rx /usr/local/bin/yt-dlp
         sudo chmod a+rx ytarchive
         sudo cp ytarchive /usr/local/bin/ytarchive
         sudo chmoda+rx go-ul
         sudo cp go-ul /usr/local/bin/go-ul
+        sudo wget -q 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
         sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
         sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
