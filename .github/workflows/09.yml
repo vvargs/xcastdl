@@ -1,0 +1,68 @@
+name: 09-DL-P
+on: 
+  workflow_dispatch:
+    inputs:
+      url:
+        required: true
+        description: URL for yt-dlp
+      name:
+        required: true
+        description: name
+      ftp_only:
+        type: boolean
+        description: Only upload to FTP
+        default: false
+      no_discord:
+        type: boolean
+        description: Disable discord upload
+        default: false
+jobs:
+  Y-DL:
+    runs-on: ubuntu-latest
+    steps :
+    - uses: actions/checkout@v2
+    - name: Installing
+      run : |
+        sudo apt update -y
+        nohup sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz' &
+        sudo wget 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp' -O /usr/local/bin/yt-dlp
+        sudo chmod a+rx /usr/local/bin/yt-dlp
+        sudo chmod a+rx ytarchive
+        sudo cp ytarchive /usr/local/bin/ytarchive
+        sudo chmoda+rx go-ul
+        sudo cp go-ul /usr/local/bin/go-ul
+        sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
+        sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo mkdir Y
+        echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/link.txt
+    - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
+      run : sudo yt-dlp -P /Y ${{github.event.inputs.url}}
+    - name: Uploading 
+      if  : ${{github.event.inputs.ftp_only == 'false'}}
+      timeout-minutes: 240
+      env :
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run : |
+        go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
+        go-ul pixeldrain anonfiles gofile catbox -d 'Y/' -r -o output/link.txt
+    - name: Uploading to FTP
+      if  : ${{github.event.inputs.ftp_only == 'true'}}
+      timeout-minutes: 240
+      env :
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run : |
+        go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
+    - name: Archive ${{github.event.inputs.name}}s link.txt 
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{github.event.inputs.name}}
+        path: output/*.txt
+    - name: Send file to discord
+      if  : ${{github.event.inputs.no_discord == 'false'}}
+      uses: sinshutu/upload-to-discord@master
+      env :
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      with:
+        args: output/*.txt
