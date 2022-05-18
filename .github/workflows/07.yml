@@ -33,7 +33,6 @@ jobs:
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
         sudo mkdir F
         echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/links.txt
-        echo ${{ secrets.FCC_COOKIES }} > cookies.txt
         sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
