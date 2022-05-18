@@ -24,7 +24,7 @@ jobs:
     - name: Installing
       run : |
         sudo apt update -y
-        nohup sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz' &
+        nohup sudo wget -q 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz' &
         nohup sudo chmod +x go-ul &
         nohup sudo cp go-ul /usr/local/bin/go-ul &
         pip install --upgrade 'git+https://github.com/HoloArchivists/fc2-live-dl.git#egg=fc2-live-dl'
@@ -33,34 +33,22 @@ jobs:
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
         sudo mkdir F
         echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/links.txt
+        echo ${{ secrets.FCC_COOKIES }} > cookies.txt
         sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
-    - name: check fc2-live-dl
-      run: fc2-live-dl
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
-      if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: sudo fc2-live-dl -x --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
-#       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
-    - name: Downloading Audio-only
-      if: ${{github.event.inputs.audioOnly == 'true'}}
-      run: sudo fc2-live-dl --quality sound --threads 4 --wait --wait-for-quality-timeout 15 --poll-interval POLL_INTERVAL 15 --log-level debug -o 'F/%(channel_name)s %(date)s %(title)s.%(ext)s' "${{github.event.inputs.url}}"
-#       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+      env:
+        URL: ${{github.event.inputs.url}}
+        AUDUI_ONLY: ${{github.event.inputs.audioOnly}}
+      run: python fccdl.py
     - name: Uploading
-      if: ${{github.event.inputs.audioOnly == 'false'}}
       timeout-minutes: 240
+      env:
+        VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul pixeldrain gofile anonfiles catbox -d 'F/' -r -o output/links.txt
-    - name: Uploading TF.sh Video
-      if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: |
-        sudo mv F/*.mp4 F/${{github.event.inputs.name}}.mp4
-        curl --upload-file "${{github.event.inputs.name}}.mp4" "https://transfer.sh/${{github.event.inputs.name}}.mp4" >> output/links.txt
-    - name: Uploading TF.sh Audio
-      run: |
-        sudo mv F/*.m4a F/${{github.event.inputs.name}}.m4a
-        curl --upload-file "F/${{github.event.inputs.name}}.m4a" "https://transfer.sh/${{github.event.inputs.name}}.m4a" >> output/links.txt
+        go-ul pixeldrain anonfiles gofile catbox ftp -d 'F/' -r -u '${{ env.VOE_FTP }}/FC2' -O -o 'output/${{github.event.inputs.name}}.txt'
     - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
       with:
         name: ${{github.event.inputs.name}}
-        path: output
+        path: output/*.txt
