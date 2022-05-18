@@ -28,11 +28,11 @@ jobs:
         sudo chmod a+rx /usr/local/bin/yt-dlp
         sudo chmod a+rx ytarchive
         sudo cp ytarchive /usr/local/bin/ytarchive
-        sudo chmoda+rx go-ul
+        sudo chmod a+rx go-ul
         sudo cp go-ul /usr/local/bin/go-ul
         sudo wget -q 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
         sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
-        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo chmod a+rx ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
         sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
         sudo mkdir Y
@@ -54,7 +54,8 @@ jobs:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run : |
         go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
-    - name: Archive ${{github.event.inputs.name}}s link.txt 
+    - name: Archive ${{github.event.inputs.name}}s link.txt
+      if  : ${{github.event.inputs.ftp_only == 'false'}}
       uses: actions/upload-artifact@v3
       with:
         name: ${{github.event.inputs.name}}
