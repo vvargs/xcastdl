@@ -1,0 +1,65 @@
+name: 02-DL-SFFraw
+on: 
+  workflow_dispatch:
+    inputs:
+      filename:
+        required: true
+        description: Filename
+      m3u8url:
+        required: true
+        description: m3u8 URL
+      audioonly:
+        type: boolean
+        description: Audio-only
+        default: false
+      videoonly:
+        type: boolean
+        description: Vudio-only
+        default: false
+      useffmpeg:
+        type: boolean
+        description: use FFMPEG
+        default: false
+jobs:
+  SFFraw:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.8"
+    - name: Installing
+      run : |
+        sudo apt update
+        sudo apt install -y wget
+        sudo pip install streamlink
+        sudo wget 'https://raw.githubusercontent.com/rexazier/r-civer/main/unix2base62.py'
+        sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
+        sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
+        sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x go-ul
+        sudo cp go-ul /usr/local/bin/go-ul
+        sudo mkdir DL
+        sudo mkdir UL
+        echo ${{github.event.inputs.name}} > 'output/${{github.event.inputs.filename}}.txt'
+    - name: Downloading
+      env:
+        FILE_NAME: ${{github.event.inputs.filename}}
+        M3U8_URL: ${{github.event.inputs.m3u8url}}
+        AUDIO_ONLY: ${{github.event.inputs.audioonly}}
+        VIDEO_ONLY: ${{github.event.inputs.videoonly}}
+        USE_FFMEG: ${{github.event.inputs.useffmpeg}}
+      run: python SFFraw.py
+    - name: Uploading
+      env:
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run: go-ul pixeldrain gofile anonfiles ftp -d 'output/' -r -u '${{ env.VOE_FTP }}/SFF/' -o 'output/${{github.event.inputs.filename}}.txt'
+    - name: Send file to discord
+      uses: sinshutu/upload-to-discord@master
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      with:
+        args: output/*.txt
