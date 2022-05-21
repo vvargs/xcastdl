@@ -20,6 +20,10 @@ on:
         type: boolean
         description: use FFMPEG
         default: false
+      discord:
+        type: boolean
+        description: enable discord norification
+        default: true
 jobs:
   SFFDL:
     runs-on: ubuntu-latest
@@ -59,6 +63,7 @@ jobs:
       run: go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/SFF/' -o 'output/${{github.event.inputs.filename}}.txt'
       # curl --upload-file "UL/*.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4"
     - name: Send file to discord
+      if: ${{github.event.inputs.disable_discord == 'true'}}
       uses: sinshutu/upload-to-discord@master
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
