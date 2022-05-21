@@ -69,7 +69,7 @@ jobs:
         go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/SFF' -o 'output/link.txt'
         mv 'output/link.txt' "output/$(echo $(date +'[%Y-%m-%d]')) ${{github.event.inputs.filename}}.txt"
     - name: Uploading to FTP
-      if: ${{github.event.inputs.ftp_only == 'treu'}}
+      if: ${{github.event.inputs.ftp_only == 'true'}}
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
