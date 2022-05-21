@@ -14,19 +14,19 @@ on:
         default: false
       videoonly:
         type: boolean
-        description: Vudio-only
+        description: Video-only
+        default: false
+      discord:
+        type: boolean
+        description: sent to Discord 
+        default: true
+      ftp_only:
+        type: boolean
+        description: FTP-ONLY
         default: false
       useffmpeg:
         type: boolean
         description: use FFMPEG
-        default: false
-      discord:
-        type: boolean
-        description: enable discord norification
-        default: true
-      ftp_only:
-        type: boolean
-        description: enable ftp
         default: false
 jobs:
   SFFDL:
