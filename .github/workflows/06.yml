@@ -54,7 +54,7 @@ jobs:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
         go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
-        mv output/link.txt 'output/${{github.event.inputs.name}}-$(echo "${{github.event.inputs.url}}" | tail -c 12)-[06Y].txt'
+        mv output/link.txt "output/${{github.event.inputs.name}}-$(echo '${{github.event.inputs.url}}' | tail -c 12)-[06Y].txt"
     - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
       with:
