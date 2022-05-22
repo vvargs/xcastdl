@@ -47,11 +47,11 @@ jobs:
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       if  : ${{ github.event.inputs.video_only == 'true' }}
       timeout-minutes: 360
-      run : sudo yt-dlp --merge-output mkv -P Y ${{github.event.inputs.url}}
+      run : sudo yt-dlp --merge-output mkv -P Y --downloader-args "ffmpeg:-v error" ${{github.event.inputs.url}}
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}} audio-only
       if  : ${{ github.event.inputs.audio_only == 'true' }}
       timeout-minutes: 360
-      run : sudo yt-dlp -f bestaudio --merge-output mka -P Y ${{github.event.inputs.url}}
+      run : sudo yt-dlp -f bestaudio --merge-output mka -P Y --downloader-args "ffmpeg:-v error" ${{github.event.inputs.url}}
     - name: Uploading to FTP
       if  : ${{(github.event.inputs.ftp_only == 'true') && (github.event.inputs.video_only == 'true')}}
       timeout-minutes: 240
