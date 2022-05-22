@@ -44,6 +44,7 @@ jobs:
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
         sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
         echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/link.txt
+        sudo mkdir Y
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       if  : ${{ github.event.inputs.video_only == 'true' }}
       timeout-minutes: 360
