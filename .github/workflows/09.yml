@@ -7,14 +7,22 @@ on:
         description: URL for yt-dlp
       name:
         required: true
-        description: name
+        description: filename
+      audio_only:
+        type: boolean
+        description: Audio-only
+        default: false
+      video_only:
+        type: boolean
+        description: Video-only
+        default: false
+      discord:
+        type: boolean
+        description: sent to Discord 
+        default: true
       ftp_only:
         type: boolean
-        description: Only upload to FTP
-        default: false
-      no_discord:
-        type: boolean
-        description: Disable discord upload
+        description: FTP-ONLY
         default: false
 jobs:
   Y-DL:
@@ -35,34 +43,38 @@ jobs:
         sudo chmod a+rx ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
         sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
-        sudo mkdir Y
         echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/link.txt
-        sudo cp yt-dlp.conf Y/yt-dlp.conf
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
-      run : sudo yt-dlp -P /Y ${{github.event.inputs.url}}
+      if  : ${{ github.event.inputs.video_only == 'true' }}
+      timeout-minutes: 360
+      run : sudo yt-dlp --merge-output mkv -P Y ${{github.event.inputs.url}}
+    - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}} audio-only
+      if  : ${{ github.event.inputs.audio_only == 'true' }}
+      timeout-minutes: 360
+      run : sudo yt-dlp -f bestaudio --merge-output mka -P Y ${{github.event.inputs.url}}
+    - name: Uploading to FTP
+      if  : ${{(github.event.inputs.ftp_only == 'true') && (github.event.inputs.video_only == 'true')}}
+      timeout-minutes: 240
+      env :
+        VOE_FTP: ${{ secrets.VOE_FTP }}
+      run : |
+        go-ul ftp -d 'Y' -r -u '${{ env.VOE_FTP }}/DLP' -O
     - name: Uploading 
-      if  : ${{github.event.inputs.ftp_only == 'false'}}
+      if  : ${{ github.event.inputs.ftp_only == 'false' }}
       timeout-minutes: 240
       env :
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run : |
         go-ul ftp -d 'Y' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
         go-ul pixeldrain anonfiles gofile catbox -d 'Y' -r -o output/link.txt
-    - name: Uploading to FTP
-      if  : ${{github.event.inputs.ftp_only == 'true'}}
-      timeout-minutes: 240
-      env :
-        VOE_FTP: ${{ secrets.VOE_FTP }}
-      run : |
-        go-ul ftp -d 'Y' -r -u '${{ env.VOE_FTP }}/DLP' -O -o output/link.txt
     - name: Archive ${{github.event.inputs.name}}s link.txt
-      if  : ${{github.event.inputs.ftp_only == 'false'}}
+      if  : ${{ github.event.inputs.ftp_only == 'false' }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{github.event.inputs.name}}
         path: output/*.txt
     - name: Send file to discord
-      if  : ${{github.event.inputs.no_discord == 'false'}}
+      if  : ${{ (github.event.inputs.discord == 'true') || github.event.inputs.ftp_only == 'true' }}
       uses: sinshutu/upload-to-discord@master
       env :
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
