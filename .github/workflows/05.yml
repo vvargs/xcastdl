@@ -21,10 +21,12 @@ jobs:
       timeout-minutes: 360
       run: sudo aria2c -d T --seed-time=0 "${{github.event.inputs.magnet}}"
     - name: Uploading Video
+      env:
+        VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul pixeldrain gofile anonfiles -d 'T/' -r -o output/link.txt
+        go-ul pixeldrain gofile anonfiles ftp -d 'T/' -r -u '${{ env.VOE_FTP }}/T/' -o output/link.txt
     - name: Upload Downloaded Videos
       uses: actions/upload-artifact@v3
       with:
-        name: link.zip
-        path: output
+        name: link
+        path: output/*.txt
