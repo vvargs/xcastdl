@@ -3,7 +3,7 @@ import os
 url = os.getenv("URL")
 audio_only = os.getenv("AUDIO_ONLY")
 
-args = '--threads 8 --wait --poll-interval POLL_INTERVAL 15 --log-level debug -o "F/%(channel_name)s %(date)s %(title)s.%(ext)s" ' + url
+args = '--threads 8 --wait --poll-interval POLL_INTERVAL 15 --log-level debug -o "F/%(channel_name)s (%(channel_id)s) [%(date)s] %(title)s.%(ext)s" ' + url
 
 if audio_only == 'true':
   download_command = 'sudo fc2-live-dl --quality sound %s ' % (args)
