@@ -26,7 +26,7 @@ jobs:
         sudo apt update -y
         sudo wget -q 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
         sudo chmod +x go-ul
-        sudo cp go-ul /usr/local/bin/go-ul!
+        sudo cp go-ul /usr/local/bin/go-ul
         sudo pip install --upgrade fc2-live-dl
         sudo pip install --upgrade 'git+https://github.com/HoloArchivists/fc2-live-dl.git#egg=fc2-live-dl'
         sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
