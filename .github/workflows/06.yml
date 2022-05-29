@@ -32,28 +32,28 @@ jobs:
         sudo cp ytarchive /usr/local/bin/ytarchive
         sudo chmod +x go-ul
         sudo cp go-ul /usr/local/bin/go-ul
-        sudo mkdir Y
+        sudo rm output/.gitkeep DL/.gitkeep UL/.gitkeep
         echo ${{github.event.inputs.name}} ${{github.event.inputs.url}} > output/link.txt
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Downloading Audio-only
       if: ${{github.event.inputs.audioOnly == 'true'}}
-      run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading ftp
       if: ${{github.event.inputs.audioOnly == 'false'}}
       timeout-minutes: 240
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul ftp -d 'Y/' -r -u '${{ env.VOE_FTP }}/YT/' -O -o output/link.txt
-    - name: Uploading 
+        go-ul ftp -d 'DL/' -r -u '${{ env.VOE_FTP }}/YouTube/${{github.event.inputs.name}}' -O -o output/link.txt
+    - name: Uploading
       timeout-minutes: 240
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
+        go-ul pixeldrain gofile anonfiles catbox -d 'DL/' -r -o output/link.txt
         mv output/link.txt "output/${{github.event.inputs.name}}-$(echo '${{github.event.inputs.url}}' | tail -c 12)-[06Y].txt"
     - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
@@ -63,6 +63,6 @@ jobs:
     - name: Send file to discord
       uses: sinshutu/upload-to-discord@master
       env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_YT }}
       with:
         args: output/*.txt
