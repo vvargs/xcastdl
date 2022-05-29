@@ -50,7 +50,7 @@ jobs:
         sudo chmod a+rx go-ul
         sudo cp go-ul /usr/local/bin/go-ul
         sudo rm output/.gitkeep DL/.gitkeep UL/.gitkeep
-        echo $(date +'[%Y-%m-%d]') ${{github.event.inputs.name}} > 'output/link.txt'
+        echo $(date +'[%Y-%m-%d]') ${{github.event.inputs.filename}} > 'output/link.txt'
     - name: Downloading
       env:
         FILE_NAME: ${{github.event.inputs.filename}}
