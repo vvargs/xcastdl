@@ -41,9 +41,8 @@ jobs:
         sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
         sudo chmod +x go-ul
         sudo mv go-ul /usr/local/bin/go-ul
-        sudo mkdir DL
-        sudo mkdir UL
-        echo ${{github.event.inputs.name}} ${{github.event.inputs.m3u8url}} > 'output/link.txt'
+        sudo rm output/.gitkeep DL/.gitkeep UL/.gitkeep
+        echo $(date +'[%Y-%m-%d]') ${{github.event.inputs.name}} ${{github.event.inputs.m3u8url}} > 'output/link.txt'
     - name: Downloading
       timeout-minutes: 360
       env:
@@ -58,13 +57,13 @@ jobs:
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/twitcast/' -o 'output/link.txt'
+        go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/twitcast/${{github.event.inputs.filename}}' -o 'output/link.txt'
         mv 'output/link.txt' 'output/${{github.event.inputs.filename}}.txt'
      #  url --upload-file "UL/*.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4" >> 'output/${{github.event.inputs.filename}}.txt'
     - name: Send file to discord
       uses: sinshutu/upload-to-discord@master
       env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_TC }}
       with:
         args: output/*.txt
     - name: Upload ${{github.event.inputs.filename}}s links
