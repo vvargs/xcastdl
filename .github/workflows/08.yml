@@ -57,7 +57,7 @@ jobs:
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
       run: |
-        go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/twitcast/${{github.event.inputs.filename}}' -o 'output/link.txt'
+        go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/twitcast' -o 'output/link.txt'
         mv 'output/link.txt' 'output/${{github.event.inputs.filename}}.txt'
      #  url --upload-file "UL/*.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4" >> 'output/${{github.event.inputs.filename}}.txt'
     - name: Send file to discord
