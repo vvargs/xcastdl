@@ -46,6 +46,11 @@ jobs:
     - name: Downloading
       timeout-minutes: 360
       env:
+        M3U8_URL: ${{github.event.inputs.m3u8url}}
+      run: python tclivedl_check.py
+    - name: Downloading
+      timeout-minutes: 360
+      env:
         FILE_NAME: ${{github.event.inputs.filename}}
         M3U8_URL: ${{github.event.inputs.m3u8url}}
         AUDIO_ONLY: ${{github.event.inputs.audioonly}}
