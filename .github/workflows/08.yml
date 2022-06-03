@@ -31,11 +31,10 @@ jobs:
     - name: Installing
       run : |
         sudo apt update
-        sudo apt install -y wget
         sudo wget -q 'https://raw.githubusercontent.com/rexazier/r-civer/main/unix2base62.py'
         sudo wget -q 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
-        sudo pip install streamlink 
         sudo pip install requests --upgrade
+        sudo pip install streamlink 
         sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
         sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
         sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
