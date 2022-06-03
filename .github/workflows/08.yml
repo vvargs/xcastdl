@@ -43,7 +43,7 @@ jobs:
         sudo mv go-ul /usr/local/bin/go-ul
         sudo rm output/.gitkeep DL/.gitkeep UL/.gitkeep
         echo $(date +'[%Y-%m-%d]') ${{github.event.inputs.filename}} ${{github.event.inputs.m3u8url}} > 'output/link.txt'
-    - name: Downloading
+    - name: Checking
       timeout-minutes: 360
       env:
         M3U8_URL: ${{github.event.inputs.m3u8url}}
