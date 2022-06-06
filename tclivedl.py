@@ -13,7 +13,7 @@ cookies = os.getenv("TC_COOKIES")
 
 
 b64_site = "dHdpdGNhc3RpbmcudHY="
-tw_site = base64.b64decode(b64).decode("ascii")
+tw_site = base64.b64decode(b64_site).decode("ascii")
 tw_url = f"https://{tw_site}/userajax.php?c=islive&u={user_id}"
 
 response = requests.get(url).json()
