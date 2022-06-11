@@ -3,6 +3,7 @@ import requests
 import time
 import json
 import base64
+import os
 
 user_id = os.getenv("M3U8_URL").split("/")[3]
 
