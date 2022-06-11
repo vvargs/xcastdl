@@ -4,6 +4,8 @@ import unix2base62
 import json
 import base64
 import os
+import re
+
 from pathlib import Path
 
 file_name = os.getenv("FILE_NAME")
