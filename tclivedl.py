@@ -13,6 +13,7 @@ audio_only = os.getenv("AUDIO_ONLY")
 cookies = os.getenv("TC_COOKIES")
 
 info_json = 'info.json'
+path = Path(info_json)
 
 if path.is_file():
   with open(info_json, 'r') as openfile:
