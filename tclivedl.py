@@ -6,6 +6,7 @@ import os
 import re
 
 from pathlib import Path
+from datetime import date
 
 file_name = os.getenv("FILE_NAME")
 m3u8_url = os.getenv("M3U8_URL")
