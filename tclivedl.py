@@ -1,4 +1,3 @@
-import requests
 import unix2base62
 
 import json
