@@ -19,7 +19,7 @@ jobs:
         sudo rm output/.gitkeep DL/.gitkeep UL/.gitkeep
     - name: Downloading TS
       timeout-minutes: 360
-      run: sudo aria2c -d T --seed-time=0 "${{github.event.inputs.magnet}}"
+      run: sudo aria2c -d DL --seed-time=0 "${{github.event.inputs.magnet}}"
     - name: Uploading Video
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
