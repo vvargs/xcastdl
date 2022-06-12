@@ -60,7 +60,8 @@ else:
   fix_command = 'ffmpeg -hide_banner -i "DL/%s.ts" -vn -c:a copy -map_metadata -1 -movflags +faststart "UL/%s.m4a"' % (output, output)
 
 os.system(fix_command)
-cover_copy = "cp DL/%s.jpg UL/%s.jpg" % (output, output)
+cover_copy = "cp 'DL/%s.jpg' 'UL/%s.jpg'" % (output, output)
+
 os.system(cover_copy)
 
 
