@@ -52,9 +52,11 @@ jobs:
       timeout-minutes: 240
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
+        FTP_1F: ${{ secrets.FTP_1F }}
       run: |
         go-ul pixeldrain gofile anonfiles catbox -d 'DL/' -r -o output/link.txt
         mv output/link.txt "output/$(date +'[%Y-%m-%d]')_${{github.event.inputs.name}}_$(echo '${{github.event.inputs.url}}' | tail -c 12).txt"
+        go-ul ftp -d 'DL/' -r -u '${{ env.FTP_1F }}' -O
     - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
       with:
