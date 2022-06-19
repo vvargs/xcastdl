@@ -56,9 +56,13 @@ jobs:
       timeout-minutes: 240
       env:
         VOE_FTP: ${{ secrets.VOE_FTP }}
+        FTP_1F: ${{ secrets.FTP_1F }}
       run: |
         go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/twitcast' -o 'output/link.txt'
         mv 'output/link.txt' 'output/${{github.event.inputs.filename}}.txt'
+        go-ul ftp -d 'UL/' -r -u '${{ env.FTP_1F }}' -O
+        mv *.ts DL/
+        go-ul ftp -d 'DL/' -r -u '${{ env.FTP_1F }}' -O
      #  url --upload-file "UL/*.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4" >> 'output/${{github.event.inputs.filename}}.txt'
     - name: Send file to discord
       uses: sinshutu/upload-to-discord@master
