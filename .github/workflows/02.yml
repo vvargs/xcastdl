@@ -65,7 +65,7 @@ jobs:
         VOE_FTP: ${{ secrets.VOE_FTP }}
         FTP_1F: ${{ secrets.FTP_1F }}
       run: |
-        go-ul pixeldrain gofile anonfiles catbox ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/SFF/${{github.event.inputs.filename}}' -o 'output/link.txt'
+        go-ul pixeldrain anonfiles catbox ftp gofile -d 'UL/' -r -u '${{ env.VOE_FTP }}/SFF/${{github.event.inputs.filename}}' -o 'output/link.txt'
         mv 'output/link.txt' "output/$(echo $(date +'[%Y-%m-%d]')) ${{github.event.inputs.filename}}.txt"
         go-ul ftp -d 'UL/' -r -u '${{ env.FTP_1F }}' -O
     - name: Uploading to FTP
