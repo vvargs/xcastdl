@@ -11,6 +11,8 @@ output = "%s [%s]" % (file_name, unix2base62.timename())
 # metadata = '-metadata:g encoding_tool="GA.00.00"'
 if use_ffmpeg == 'true':
   download_command = 'ffmpeg -hide_banner -i "%s" -c copy "%s.ts"' % (m3u8_url, output)
+elif audio_only == 'true':
+  download_command = 'streamlink --retry-open 3 --retry-streams 30 --retry-max 300 --stream-segment-threads 8 --force-progress -o "%s.ts" "%s" audio_only,audio_opus,audio,best' % (output, m3u8_url)
 else:
   download_command = 'streamlink --retry-open 3 --retry-streams 30 --retry-max 300 --stream-segment-threads 8 --force-progress -o "%s.ts" "%s" best' % (output, m3u8_url)
 os.system(download_command)
