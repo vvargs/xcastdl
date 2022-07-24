@@ -56,7 +56,7 @@ jobs:
         VOE_FTP: ${{ secrets.VOE_FTP }}
         FTP_1F: ${{ secrets.FTP_1F }}
       run: |
-        go-ul pixeldrain anonfiles ftp gofile -d 'DL/' -r -u '${{ env.VOE_FTP }}/SFF/${{github.event.inputs.filename}}' -o 'output/link.txt'
+        go-ul ftp gofile pixeldrain anonfiles -d 'DL/' -r -u '${{ env.VOE_FTP }}/SFF/${{github.event.inputs.filename}}' -o 'output/link.txt'
         mv 'output/link.txt' "output/$(echo $(date +'[%Y-%m-%d]')) ${{github.event.inputs.filename}}.txt"
         go-ul ftp -d 'DL/' -r -u '${{ env.FTP_1F }}' -O
     - name: Send file to discord
