@@ -37,10 +37,10 @@ jobs:
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s (%(channel)s)" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Downloading Audio-only
       if: ${{github.event.inputs.audioOnly == 'true'}}
-      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s (%(channel)s)" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading ftp
       if: ${{github.event.inputs.audioOnly == 'false'}}
       timeout-minutes: 240
